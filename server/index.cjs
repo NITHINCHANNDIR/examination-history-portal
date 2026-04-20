@@ -30,18 +30,6 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, "../client/dist")));
 
-app.get("*", (req, res, next) => {
-    if (req.url.startsWith("/api")) {
-        return next();
-    }
-    res.sendFile(path.join(__dirname, "../client/dist/index.html"));
-});
-
-// Create uploads directory
-const fs = require('fs');
-if (!fs.existsSync('uploads')) {
-    fs.mkdirSync('uploads');
-}
 
 // API Routes
 app.use('/api/auth', authRoutes);
@@ -58,6 +46,26 @@ app.get('/api/health', (req, res) => {
         timestamp: new Date().toISOString()
     });
 });
+
+// API 404 handler
+app.use('/api', (req, res) => {
+    res.status(404).json({
+        success: false,
+        message: 'API Route not found'
+    });
+});
+
+// SPA catch-all (MUST be after API routes)
+app.get("(.*)", (req, res) => {
+    res.sendFile(path.join(__dirname, "../client/dist/index.html"));
+});
+
+// Create uploads directory
+const fs = require('fs');
+if (!fs.existsSync('uploads')) {
+    fs.mkdirSync('uploads');
+}
+
 
 // Error handling middleware
 app.use((err, req, res) => {
