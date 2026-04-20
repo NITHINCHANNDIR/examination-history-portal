@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const connectDB = require('./src/config/database');
+const path = require("path");
 
 // Import routes
 const authRoutes = require('./src/routes/authRoutes');
@@ -25,6 +26,17 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+const __dirname = path.resolve();
+
+app.use(express.static(path.join(__dirname, "../client/dist")));
+
+app.get("*", (req, res, next) => {
+    if (req.url.startsWith("/api")) {
+        return next();
+    }
+    res.sendFile(path.join(__dirname, "../client/dist/index.html"));
+});
 
 // Create uploads directory
 const fs = require('fs');
