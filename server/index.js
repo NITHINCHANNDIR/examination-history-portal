@@ -21,7 +21,7 @@ connectDB();
 // Middleware
 app.use(helmet());
 app.use(cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:3000',
+    origin: '*',
     credentials: true
 }));
 app.use(express.json());
