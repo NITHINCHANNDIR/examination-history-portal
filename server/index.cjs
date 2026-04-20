@@ -56,7 +56,7 @@ app.use('/api', (req, res) => {
 });
 
 // SPA catch-all (MUST be after API routes)
-app.get("(.*)", (req, res) => {
+app.get("{*path}", (req, res) => {
     res.sendFile(path.join(__dirname, "../client/dist/index.html"));
 });
 
